@@ -448,8 +448,6 @@
 
   <select id="filterSeason" style="width:100px">
     <option value="">All seasons</option>
-    <option value="SS">SS</option>
-    <option value="AW">AW</option>
   </select>
 
   <div class="spacer"></div>
@@ -603,7 +601,10 @@ function init() {
   const years = [...new Set(allItems.map(i => i.year))].filter(Boolean).sort((a,b)=>b-a);
   const sel = document.getElementById("filterYear");
   years.forEach(y => { const o = document.createElement("option"); o.value = y; o.textContent = y; sel.appendChild(o); });
-
+  // Populate year dropdown
+  const seasons = [...new Set(allItems.map(i => i.season))].filter(Boolean).sort((a,b)=>b-a);
+  const sel = document.getElementById("filterSeason");
+  seasons.forEach(y => { const o = document.createElement("option"); o.value = y; o.textContent = y; sel.appendChild(o); });
   // Header count
   document.getElementById("headerCount").textContent = allItems.length + " items";
 
