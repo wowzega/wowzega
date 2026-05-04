@@ -599,10 +599,13 @@ function init() {
 
   // Populate year dropdown
   const years = [...new Set(allItems.map(i => i.year))].filter(Boolean).sort((a,b)=>b-a);
-  years.forEach(y => { const o = document.createElement("option"); o.value = y; o.textContent = y; sel.appendChild(o); });
+  const selYears = document.getElementById("filterYear");
+  years.forEach(y => { const o = document.createElement("option"); o.value = y; o.textContent = y; selYears.appendChild(o); });
   // Populate year dropdown
   const seasons = [...new Set(allItems.map(i => i.season))].filter(Boolean).sort((a,b)=>b-a);
-  seasons.forEach(y => { const o = document.createElement("option"); o.value = y; o.textContent = y; sel.appendChild(o); });
+  const selSeasons = document.getElementById("filterSeason");
+  seasons.forEach(y => { const o = document.createElement("option"); o.value = y; o.textContent = y; selSeasons.appendChild(o); });
+  
   // Header count
   document.getElementById("headerCount").textContent = allItems.length + " items";
 
