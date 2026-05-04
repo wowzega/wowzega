@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>adidas SPZL — Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ── Reset & base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0e0e0e;
+    --white: #f5f3ee;
+    --cream: #ece9e1;
+    --mid: #b8b4ac;
+    --muted: #7a776f;
+    --accent: #c8401a;
+    --accent2: #1a3cc8;
+    --border: #d4d0c8;
+    --card-bg: #f9f7f3;
+
+    --mono: 'DM Mono', monospace;
+    --display: 'Barlow Condensed', sans-serif;
+  }
+
+  html { background: var(--white); color: var(--black); }
+  body { font-family: var(--mono); min-height: 100vh; }
+
+  /* ── Header ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    background: var(--white);
+    z-index: 100;
+  }
+  .wordmark {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--black);
+  }
+  .wordmark span { color: var(--accent); }
+  .header-count {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Toolbar ── */
+  .toolbar {
+    padding: 1rem 2rem;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    background: var(--cream);
+  }
+  .toolbar input[type="text"] {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 7px 12px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--black);
+    border-radius: 2px;
+    outline: none;
+    flex: 1;
+    min-width: 180px;
+    letter-spacing: 0.03em;
+  }
+  .toolbar input[type="text"]:focus { border-color: var(--black); }
+  .toolbar input[type="text"]::placeholder { color: var(--mid); }
+
+  select {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--black);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 24px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a776f'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+  }
+  select:focus { border-color: var(--black); }
+
+  .pills {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .pill {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    border-radius: 2px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: all 0.1s;
+  }
+  .pill:hover { border-color: var(--black); color: var(--black); }
+  .pill.active { background: var(--black); color: var(--white); border-color: var(--black); }
+
+  .spacer { flex: 1; }
+
+  .view-toggle {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .view-btn {
+    background: transparent;
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.1s;
+    display: flex;
+    align-items: center;
+  }
+  .view-btn:hover { background: var(--cream); color: var(--black); }
+  .view-btn.active { background: var(--black); color: var(--white); }
+  .view-btn + .view-btn { border-left: 1px solid var(--border); }
+
+  /* ── Main ── */
+  main { padding: 1.5rem 2rem; }
+
+  .results-bar {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+  }
+
+  /* ── Card grid ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1px;
+    border: 1px solid var(--border);
+  }
+  .grid-item {
+    background: var(--card-bg);
+    cursor: pointer;
+    transition: background 0.1s;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .grid-item:hover { background: var(--cream); }
+  .grid-item.highlighted { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+  .card-img {
+    aspect-ratio: 1;
+    background: var(--cream);
+    overflow: hidden;
+    position: relative;
+  }
+  .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  .grid-item:hover .card-img img { transform: scale(1.04); }
+  .img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--mid);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .type-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border-radius: 1px;
+  }
+  .type-shoes    { background: #0e0e0e; color: #f5f3ee; }
+  .type-clothing { background: var(--accent); color: #f5f3ee; }
+  .type-accessories { background: var(--accent2); color: #f5f3ee; }
+
+  .card-body { padding: 12px 14px 14px; }
+  .card-name {
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    margin-bottom: 4px;
+    color: var(--black);
+  }
+  .card-color {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.03em;
+  }
+  .card-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+  }
+  .card-sku {
+    font-size: 10px;
+    color: var(--mid);
+    letter-spacing: 0.06em;
+  }
+  .card-season {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+
+  /* ── List view ── */
+  .list-view { display: none; }
+  .list-view table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .list-view thead th {
+    font-family: var(--display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--black);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .list-view thead th:hover { color: var(--black); }
+  .list-view thead th .sort-icon { margin-left: 4px; opacity: 0.4; }
+  .list-view thead th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+
+  .list-view tbody tr {
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .list-view tbody tr:hover { background: var(--cream); }
+  .list-view tbody tr.highlighted { background: #fff0ec; }
+
+  .list-view td {
+    padding: 10px 12px;
+    vertical-align: middle;
+    color: var(--black);
+    letter-spacing: 0.02em;
+  }
+  .td-thumb {
+    width: 48px;
+    height: 48px;
+    background: var(--cream);
+    overflow: hidden;
+    border-radius: 1px;
+    flex-shrink: 0;
+  }
+  .td-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .td-sku { color: var(--muted); font-size: 11px; }
+  .td-name { font-family: var(--display); font-size: 15px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .td-notes { color: var(--muted); font-size: 11px; max-width: 280px; }
+  .td-season { font-size: 11px; color: var(--muted); }
+
+  /* ── Detail drawer ── */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(14,14,14,0.5);
+    z-index: 200;
+    backdrop-filter: blur(2px);
+  }
+  .overlay.open { display: flex; align-items: flex-end; justify-content: flex-end; }
+
+  .drawer {
+    background: var(--white);
+    width: 420px;
+    max-width: 100vw;
+    height: 100vh;
+    overflow-y: auto;
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    animation: slideIn 0.2s ease;
+  }
+  @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+  .drawer-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: var(--white);
+    z-index: 1;
+  }
+  .drawer-sku { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+  .close-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 10px;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 11px;
+    border-radius: 2px;
+    transition: all 0.1s;
+  }
+  .close-btn:hover { border-color: var(--black); color: var(--black); }
+
+  .drawer-img {
+    aspect-ratio: 1;
+    background: var(--cream);
+    overflow: hidden;
+  }
+  .drawer-img img { width: 100%; height: 100%; object-fit: cover; }
+  .drawer-img .img-placeholder { height: 100%; display: flex; align-items: center; justify-content: center; color: var(--mid); font-size: 12px; letter-spacing: 0.06em; }
+
+  .drawer-body { padding: 1.5rem 1.25rem; flex: 1; }
+  .drawer-name {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .drawer-color { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
+
+  .drawer-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+  .meta-item label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mid); margin-bottom: 3px; }
+  .meta-item span { font-size: 14px; font-weight: 500; }
+
+  .drawer-notes-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mid); margin-bottom: 6px; }
+  .drawer-notes { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  .share-row { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .share-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 2px;
+    letter-spacing: 0.04em;
+    transition: all 0.1s;
+    width: 100%;
+    text-align: center;
+  }
+  .share-btn:hover { border-color: var(--black); color: var(--black); }
+  .share-btn.copied { border-color: var(--accent); color: var(--accent); }
+
+  /* ── Empty state ── */
+  .empty {
+    grid-column: 1 / -1;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── Loading ── */
+  .loading-state {
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    header, .toolbar, main { padding-left: 1rem; padding-right: 1rem; }
+    .wordmark { font-size: 18px; }
+    .drawer { width: 100vw; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wordmark">adidas <span>SPZL</span></div>
+  <div class="header-count" id="headerCount">— Archive</div>
+</header>
+
+<div class="toolbar">
+  <input type="text" id="search" placeholder="Search name, SKU, colour…" />
+
+  <select id="filterType">
+    <option value="">All types</option>
+    <option value="shoes">Shoes</option>
+    <option value="clothing">Clothing</option>
+    <option value="accessories">Accessories</option>
+  </select>
+
+  <select id="filterYear" style="width:110px">
+    <option value="">All years</option>
+  </select>
+
+  <select id="filterSeason" style="width:100px">
+    <option value="">All seasons</option>
+    <option value="SS">SS</option>
+    <option value="AW">AW</option>
+  </select>
+
+  <div class="spacer"></div>
+
+  <div class="view-toggle">
+    <button class="view-btn active" id="btnCard" title="Card view" onclick="setView('card')">
+      <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" rx="1" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1" fill="currentColor"/><rect x="1" y="9" width="6" height="6" rx="1" fill="currentColor"/><rect x="9" y="9" width="6" height="6" rx="1" fill="currentColor"/></svg>
+    </button>
+    <button class="view-btn" id="btnList" title="List view" onclick="setView('list')">
+      <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="2" rx="1" fill="currentColor"/><rect x="1" y="7" width="14" height="2" rx="1" fill="currentColor"/><rect x="1" y="12" width="14" height="2" rx="1" fill="currentColor"/></svg>
+    </button>
+  </div>
+</div>
+
+<main>
+  <div class="results-bar" id="resultsBar">Loading…</div>
+
+  <div id="loadingState" class="loading-state">Fetching catalog…</div>
+
+  <!-- Card view -->
+  <div class="grid" id="cardGrid" style="display:none"></div>
+
+  <!-- List view -->
+  <div class="list-view" id="listView">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:60px"></th>
+          <th onclick="sortBy('sku')">SKU <span class="sort-icon" id="sort-sku">↕</span></th>
+          <th onclick="sortBy('name')">Name <span class="sort-icon" id="sort-name">↕</span></th>
+          <th onclick="sortBy('color')">Colour <span class="sort-icon" id="sort-color">↕</span></th>
+          <th onclick="sortBy('year')">Year <span class="sort-icon" id="sort-year">↕</span></th>
+          <th onclick="sortBy('season')">Season <span class="sort-icon" id="sort-season">↕</span></th>
+          <th onclick="sortBy('type')">Type <span class="sort-icon" id="sort-type">↕</span></th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="listBody"></tbody>
+    </table>
+  </div>
+</main>
+
+<!-- Detail drawer -->
+<div class="overlay" id="overlay" onclick="closeDrawer(event)">
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <span class="drawer-sku" id="dSku"></span>
+      <button class="close-btn" onclick="closeDrawerDirect()">✕ Close</button>
+    </div>
+    <div class="drawer-img" id="dImg"></div>
+    <div class="drawer-body">
+      <div class="drawer-name" id="dName"></div>
+      <div class="drawer-color" id="dColor"></div>
+      <div class="drawer-meta">
+        <div class="meta-item"><label>Year</label><span id="dYear"></span></div>
+        <div class="meta-item"><label>Season</label><span id="dSeason"></span></div>
+        <div class="meta-item"><label>Type</label><span id="dType"></span></div>
+      </div>
+      <div id="dNotesWrap" style="display:none">
+        <div class="drawer-notes-label">Notes</div>
+        <div class="drawer-notes" id="dNotes"></div>
+      </div>
+      <div class="share-row">
+        <button class="share-btn" id="shareBtn" onclick="copyLink()">Copy shareable link</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// CONFIGURATION — replace with your actual Google Sheet details
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// HOW TO SET UP YOUR GOOGLE SHEET FEED:
+// 1. Open your Google Sheet
+// 2. File → Share → Publish to web
+// 3. Choose "Entire Document" and "CSV", click Publish
+// 4. Copy the URL — it looks like:
+//    https://docs.google.com/spreadsheets/d/SHEET_ID/pub?gid=0&single=true&output=csv
+// 5. Paste it below as SHEET_CSV_URL
+//
+// Your sheet columns (in order): SKU, name, color, year, season, type, image, notes
+// Column names in row 1 are used as keys — they're lowercased automatically.
+// ─────────────────────────────────────────────────────────────────────────────
+const SHEET_CSV_URL = "YOUR_PUBLISHED_CSV_URL_HERE";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DEMO DATA — remove this block once your sheet is connected
+// ─────────────────────────────────────────────────────────────────────────────
+const DEMO_DATA = [
+  { sku:"IG2018", name:"Samba Spzl",        color:"Core Black / Off White",  year:"2023", season:"AW", type:"shoes",       image:"", notes:"Classic football-inspired silhouette, gum sole."},
+  { sku:"H02026", name:"Handball Spzl",     color:"Shadow Navy",             year:"2022", season:"AW", type:"shoes",       image:"", notes:"Suede upper with vintage handball sole unit."},
+  { sku:"IE0748", name:"Track Top Spzl",    color:"Mystery Brown",           year:"2023", season:"AW", type:"clothing",    image:"", notes:"Soft-touch tricot fabric, zip-through."},
+  { sku:"H04944", name:"Wensley Spzl",      color:"Tactile Blue",            year:"2021", season:"SS", type:"shoes",       image:"", notes:"Trainer made in Wales — lightweight vulc."},
+  { sku:"IE1260", name:"Tee Spzl",          color:"Off White",               year:"2023", season:"SS", type:"clothing",    image:"", notes:"Heavy cotton, dropped shoulder."},
+  { sku:"H02064", name:"Trimm Trab Spzl",   color:"Core Black",              year:"2022", season:"SS", type:"shoes",       image:"", notes:"Lightweight mesh with suede overlays."},
+  { sku:"GW5759", name:"Cap Spzl",          color:"Night Cargo",             year:"2022", season:"AW", type:"accessories", image:"", notes:"6-panel with tonal embroidery."},
+  { sku:"H03070", name:"Bamba Spzl",        color:"Collegiate Green",        year:"2021", season:"SS", type:"shoes",       image:"", notes:"Low profile vulcanized sole, heritage shape."},
+  { sku:"IE0992", name:"Track Pants Spzl",  color:"Mystery Brown",           year:"2023", season:"AW", type:"clothing",    image:"", notes:"Matching set with track top IE0748."},
+  { sku:"H06621", name:"Gazelle Spzl",      color:"Light Brown",             year:"2022", season:"SS", type:"shoes",       image:"", notes:"Premium suede, tonal 3-Stripes."},
+  { sku:"GX7120", name:"Scarf Spzl",        color:"Maroon",                  year:"2019", season:"AW", type:"accessories", image:"", notes:"Lambswool blend."},
+  { sku:"H08341", name:"Sweat Spzl",        color:"Stone",                   year:"2021", season:"AW", type:"clothing",    image:"", notes:"Midweight fleece, woven badge."},
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// State
+// ─────────────────────────────────────────────────────────────────────────────
+let allItems = [];
+let filtered = [];
+let currentView = "card";
+let sortKey = "";
+let sortDir = 1;
+let openSku = null;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CSV parser (RFC 4180-ish)
+// ─────────────────────────────────────────────────────────────────────────────
+function parseCSV(text) {
+  const rows = [];
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  const headers = lines[0].split(",").map(h => h.trim().toLowerCase().replace(/[^a-z0-9_]/g,""));
+  for (let i = 1; i < lines.length; i++) {
+    const vals = splitCSVLine(lines[i]);
+    if (vals.length < 2) continue;
+    const obj = {};
+    headers.forEach((h, idx) => { obj[h] = (vals[idx] || "").trim(); });
+    rows.push(obj);
+  }
+  return rows;
+}
+
+function splitCSVLine(line) {
+  const result = [];
+  let cur = "", inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') { inQ = !inQ; continue; }
+    if (c === "," && !inQ) { result.push(cur); cur = ""; continue; }
+    cur += c;
+  }
+  result.push(cur);
+  return result;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Load data
+// ─────────────────────────────────────────────────────────────────────────────
+async function loadData() {
+  if (SHEET_CSV_URL === "YOUR_PUBLISHED_CSV_URL_HERE") {
+    allItems = DEMO_DATA;
+    init();
+    return;
+  }
+  try {
+    const res = await fetch(SHEET_CSV_URL);
+    const text = await res.text();
+    allItems = parseCSV(text);
+    init();
+  } catch(e) {
+    document.getElementById("loadingState").textContent = "Failed to load sheet. Check SHEET_CSV_URL.";
+    console.error(e);
+  }
+}
+
+function init() {
+  document.getElementById("loadingState").style.display = "none";
+  document.getElementById("cardGrid").style.display = "grid";
+
+  // Populate year dropdown
+  const years = [...new Set(allItems.map(i => i.year))].filter(Boolean).sort((a,b)=>b-a);
+  const sel = document.getElementById("filterYear");
+  years.forEach(y => { const o = document.createElement("option"); o.value = y; o.textContent = y; sel.appendChild(o); });
+
+  // Header count
+  document.getElementById("headerCount").textContent = allItems.length + " items";
+
+  applyFilters();
+  checkURLParam();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Filtering & sorting
+// ─────────────────────────────────────────────────────────────────────────────
+function applyFilters() {
+  const q = document.getElementById("search").value.toLowerCase();
+  const type = document.getElementById("filterType").value;
+  const year = document.getElementById("filterYear").value;
+  const season = document.getElementById("filterSeason").value;
+
+  filtered = allItems.filter(i => {
+    if (q && !((i.name||"").toLowerCase().includes(q) || (i.sku||"").toLowerCase().includes(q) || (i.color||"").toLowerCase().includes(q))) return false;
+    if (type && (i.type||"").toLowerCase() !== type) return false;
+    if (year && i.year !== year) return false;
+    if (season && i.season !== season) return false;
+    return true;
+  });
+
+  if (sortKey) {
+    filtered.sort((a, b) => {
+      const av = (a[sortKey]||"").toLowerCase();
+      const bv = (b[sortKey]||"").toLowerCase();
+      return av < bv ? -sortDir : av > bv ? sortDir : 0;
+    });
+  }
+
+  document.getElementById("resultsBar").textContent = filtered.length + " of " + allItems.length + " items";
+  renderCard();
+  renderList();
+}
+
+function sortBy(key) {
+  if (sortKey === key) sortDir *= -1; else { sortKey = key; sortDir = 1; }
+  document.querySelectorAll(".sort-icon").forEach(el => el.textContent = "↕");
+  document.querySelectorAll("thead th").forEach(el => el.classList.remove("sorted"));
+  const icon = document.getElementById("sort-" + key);
+  if (icon) { icon.textContent = sortDir === 1 ? "↑" : "↓"; icon.closest("th").classList.add("sorted"); }
+  applyFilters();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Render card view
+// ─────────────────────────────────────────────────────────────────────────────
+function renderCard() {
+  const grid = document.getElementById("cardGrid");
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty">No items match your filters</div>';
+    return;
+  }
+  grid.innerHTML = filtered.map(item => `
+    <div class="grid-item ${item.sku === openSku ? 'highlighted' : ''}" onclick="openDrawer('${item.sku}')">
+      <div class="card-img">
+        ${item.image
+          ? `<img src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'img-placeholder\\'>No image</div>'" />`
+          : '<div class="img-placeholder">No image</div>'}
+        <span class="type-badge type-${(item.type||'').toLowerCase()}">${item.type||''}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${item.name}</div>
+        <div class="card-color">${item.color}</div>
+        <div class="card-foot">
+          <span class="card-sku">${item.sku}</span>
+          <span class="card-season">${item.season} ${item.year}</span>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Render list view
+// ─────────────────────────────────────────────────────────────────────────────
+function renderList() {
+  const tbody = document.getElementById("listBody");
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:3rem;color:var(--muted);font-size:12px;letter-spacing:.06em;text-transform:uppercase">No items match your filters</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.map(item => `
+    <tr class="${item.sku === openSku ? 'highlighted' : ''}" onclick="openDrawer('${item.sku}')">
+      <td>
+        <div class="td-thumb">
+          ${item.image
+            ? `<img src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.style.display='none'" />`
+            : ''}
+        </div>
+      </td>
+      <td class="td-sku">${item.sku}</td>
+      <td class="td-name">${item.name}</td>
+      <td style="font-size:12px">${item.color}</td>
+      <td class="td-season">${item.year}</td>
+      <td class="td-season">${item.season}</td>
+      <td>
+        <span class="type-badge type-${(item.type||'').toLowerCase()}" style="position:static;display:inline-block">${item.type||''}</span>
+      </td>
+      <td class="td-notes">${item.notes||'—'}</td>
+    </tr>
+  `).join("");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// View toggle
+// ─────────────────────────────────────────────────────────────────────────────
+function setView(v) {
+  currentView = v;
+  document.getElementById("cardGrid").style.display = v === "card" ? "grid" : "none";
+  document.getElementById("listView").style.display  = v === "list" ? "block" : "none";
+  document.getElementById("btnCard").classList.toggle("active", v === "card");
+  document.getElementById("btnList").classList.toggle("active", v === "list");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Drawer
+// ─────────────────────────────────────────────────────────────────────────────
+function openDrawer(sku) {
+  const item = allItems.find(i => i.sku === sku);
+  if (!item) return;
+  openSku = sku;
+
+  document.getElementById("dSku").textContent = item.sku;
+  document.getElementById("dName").textContent = item.name;
+  document.getElementById("dColor").textContent = item.color;
+  document.getElementById("dYear").textContent = item.year;
+  document.getElementById("dSeason").textContent = item.season;
+  document.getElementById("dType").textContent = item.type;
+
+  const notesWrap = document.getElementById("dNotesWrap");
+  if (item.notes) {
+    document.getElementById("dNotes").textContent = item.notes;
+    notesWrap.style.display = "block";
+  } else {
+    notesWrap.style.display = "none";
+  }
+
+  const imgEl = document.getElementById("dImg");
+  imgEl.innerHTML = item.image
+    ? `<img src="${item.image}" alt="${item.name}" onerror="this.parentElement.innerHTML='<div class=\\'img-placeholder\\' style=\\'height:300px\\'>No image</div>'" />`
+    : '<div class="img-placeholder" style="height:300px">No image</div>';
+
+  document.getElementById("shareBtn").textContent = "Copy shareable link";
+  document.getElementById("shareBtn").classList.remove("copied");
+
+  // Update URL
+  const url = new URL(window.location);
+  url.searchParams.set("sku", sku);
+  history.replaceState({}, "", url);
+
+  document.getElementById("overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+
+  renderCard();
+  renderList();
+}
+
+function closeDrawer(e) {
+  if (e.target === document.getElementById("overlay")) closeDrawerDirect();
+}
+function closeDrawerDirect() {
+  document.getElementById("overlay").classList.remove("open");
+  document.body.style.overflow = "";
+  openSku = null;
+  const url = new URL(window.location);
+  url.searchParams.delete("sku");
+  history.replaceState({}, "", url);
+  renderCard();
+  renderList();
+}
+
+function checkURLParam() {
+  const params = new URLSearchParams(window.location.search);
+  const sku = params.get("sku");
+  if (sku) openDrawer(sku);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Share
+// ─────────────────────────────────────────────────────────────────────────────
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.getElementById("shareBtn");
+    btn.textContent = "Copied!";
+    btn.classList.add("copied");
+    setTimeout(() => { btn.textContent = "Copy shareable link"; btn.classList.remove("copied"); }, 2000);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Event listeners
+// ─────────────────────────────────────────────────────────────────────────────
+document.getElementById("search").addEventListener("input", applyFilters);
+document.getElementById("filterType").addEventListener("change", applyFilters);
+document.getElementById("filterYear").addEventListener("change", applyFilters);
+document.getElementById("filterSeason").addEventListener("change", applyFilters);
+
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawerDirect(); });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Boot
+// ─────────────────────────────────────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>
