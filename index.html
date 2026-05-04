@@ -584,10 +584,6 @@ function splitCSVLine(line) {
 // Load data
 // ─────────────────────────────────────────────────────────────────────────────
 async function loadData() {
-  if (SHEET_CSV_URL === "https://docs.google.com/spreadsheets/d/e/2PACX-1vTfnZuA5peiKO6nEZy3rOwvPJXI5A7CLxWsNktAx0aL34hx8Add7zo5wlfZWZq6jxtWnO5tMg9miOHT/pub?output=csv") {
-    init();
-    return;
-  }
   try {
     const res = await fetch(SHEET_CSV_URL);
     const text = await res.text();
